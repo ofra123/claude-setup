@@ -1,0 +1,610 @@
+<title>Claude Coding Field Manual</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@500;700;800&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+:root{
+  --ground:#F2F4F7; --surface:#FFFFFF; --sunk:#E7EBF1;
+  --ink:#141A26; --ink-2:#3C4659; --ink-3:#6A7489;
+  --rule:#D5DBE5; --accent:#2B47C9; --accent-soft:#E3E8FB;
+  --measured:#0F7A55; --measured-bg:#DDF3EA;
+  --official:#2B47C9; --official-bg:#E3E8FB;
+  --practice:#8A5A00; --practice-bg:#FBEFD5;
+  --warn:#A3321F; --warn-bg:#FBE5E0;
+  --code-bg:#161C2A; --code-ink:#E6EAF3; --code-dim:#8C97AE;
+  --display:"Schibsted Grotesk", "Segoe UI", system-ui, sans-serif;
+  --body:"Source Serif 4", Georgia, "Times New Roman", serif;
+  --mono:"JetBrains Mono", ui-monospace, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --ground:#0F131B; --surface:#171D29; --sunk:#1E2533;
+    --ink:#E8ECF4; --ink-2:#B7C0D1; --ink-3:#8590A6;
+    --rule:#2A3244; --accent:#8FA4FF; --accent-soft:#1F2845;
+    --measured:#5FD0A3; --measured-bg:#123126;
+    --official:#8FA4FF; --official-bg:#1F2845;
+    --practice:#F0BE5E; --practice-bg:#33280F;
+    --warn:#FF8C77; --warn-bg:#3A1A14;
+    --code-bg:#0A0D14; --code-ink:#E6EAF3; --code-dim:#7C879E;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --ground:#0F131B; --surface:#171D29; --sunk:#1E2533;
+  --ink:#E8ECF4; --ink-2:#B7C0D1; --ink-3:#8590A6;
+  --rule:#2A3244; --accent:#8FA4FF; --accent-soft:#1F2845;
+  --measured:#5FD0A3; --measured-bg:#123126;
+  --official:#8FA4FF; --official-bg:#1F2845;
+  --practice:#F0BE5E; --practice-bg:#33280F;
+  --warn:#FF8C77; --warn-bg:#3A1A14;
+  --code-bg:#0A0D14; --code-ink:#E6EAF3; --code-dim:#7C879E;
+}
+*{box-sizing:border-box}
+body{background:var(--ground);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.6;padding-inline:16px;padding-block:0 64px}
+a{color:var(--accent);text-underline-offset:2px}
+a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:3px}
+.wrap{max-width:1120px;margin:0 auto}
+h1,h2,h3,h4{font-family:var(--display);line-height:1.15;text-wrap:balance;margin:0}
+code,kbd{font-family:var(--mono);font-size:.84em;background:var(--sunk);padding:.1em .35em;border-radius:4px}
+p{margin:0}
+
+/* masthead */
+.mast{padding-block:48px 28px;border-bottom:1px solid var(--rule);display:grid;gap:18px}
+.eyebrow{font-family:var(--display);font-weight:700;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
+.mast h1{font-size:clamp(34px,5.4vw,58px);font-weight:800;letter-spacing:-.02em;max-width:18ch}
+.lede{font-size:19px;color:var(--ink-2);max-width:66ch}
+.legend{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center;font-family:var(--display);font-size:13px;color:var(--ink-3)}
+.chip{display:inline-flex;align-items:center;gap:6px;font-family:var(--display);font-weight:700;font-size:11px;letter-spacing:.08em;text-transform:uppercase;padding:3px 8px;border-radius:999px;white-space:nowrap}
+.chip.m{color:var(--measured);background:var(--measured-bg)}
+.chip.o{color:var(--official);background:var(--official-bg)}
+.chip.p{color:var(--practice);background:var(--practice-bg)}
+.chip.w{color:var(--warn);background:var(--warn-bg)}
+
+/* layout */
+.cols{display:grid;grid-template-columns:220px minmax(0,1fr);gap:48px;padding-top:36px}
+nav.toc{position:sticky;top:calc(env(safe-area-inset-top,0px) + 20px);align-self:start;font-family:var(--display);font-size:14px}
+nav.toc p{font-weight:700;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);margin-bottom:10px}
+nav.toc ol{list-style:none;margin:0;padding:0;display:grid;gap:2px;border-left:1px solid var(--rule)}
+nav.toc a{display:block;padding:5px 0 5px 14px;color:var(--ink-2);text-decoration:none;margin-left:-1px;border-left:2px solid transparent}
+nav.toc a:hover{color:var(--ink);border-left-color:var(--accent)}
+main{display:grid;gap:64px;min-width:0}
+section{display:grid;gap:22px;scroll-margin-top:24px}
+.sec-head{display:grid;gap:8px}
+.sec-head h2{font-size:clamp(26px,3.2vw,34px);font-weight:800;letter-spacing:-.01em}
+.sec-head p{color:var(--ink-2);max-width:66ch}
+
+/* reality strip */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1px;background:var(--rule);border:1px solid var(--rule);border-radius:10px;overflow:hidden}
+.stat{background:var(--surface);padding:18px 18px 16px;display:grid;gap:6px;align-content:start}
+.stat b{font-family:var(--display);font-size:30px;font-weight:800;letter-spacing:-.02em;font-variant-numeric:tabular-nums;color:var(--ink)}
+.stat span{font-size:15px;color:var(--ink-2);line-height:1.45}
+.stat small{font-family:var(--display);font-size:12px;color:var(--ink-3)}
+
+/* ranked list */
+.rank{list-style:none;margin:0;padding:0;display:grid;gap:14px;counter-reset:r}
+.rank>li{background:var(--surface);border:1px solid var(--rule);border-radius:10px;padding:20px 22px;display:grid;grid-template-columns:44px minmax(0,1fr);gap:4px 16px;counter-increment:r}
+.rank>li::before{content:counter(r);grid-row:1 / span 3;font-family:var(--display);font-weight:800;font-size:28px;color:var(--accent);line-height:1;padding-top:2px;font-variant-numeric:tabular-nums}
+.rank>li:first-child{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+.rank h3{font-size:20px;font-weight:700;display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center}
+.rank .why{color:var(--ink-2);max-width:68ch}
+.rank .how{font-size:15.5px;color:var(--ink-2);border-top:1px dashed var(--rule);padding-top:10px;margin-top:8px}
+.rank .how strong{font-family:var(--display);font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);margin-right:6px}
+
+/* technique cards */
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px}
+.card{background:var(--surface);border:1px solid var(--rule);border-radius:10px;padding:18px 20px;display:grid;gap:10px;align-content:start}
+.card h4{font-size:17px;font-weight:700;display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between}
+.card p,.card li{font-size:15.5px;color:var(--ink-2)}
+.card ul{margin:0;padding-left:18px;display:grid;gap:4px}
+.who{font-family:var(--display);font-size:12.5px;color:var(--ink-3)}
+
+/* stage flow */
+.flow{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.step{background:var(--surface);border:1px solid var(--rule);border-radius:10px;padding:14px 14px 12px;display:grid;gap:4px;position:relative}
+.step b{font-family:var(--display);font-size:15px}
+.step span{font-size:14px;color:var(--ink-2);line-height:1.45}
+.step .n{font-family:var(--mono);font-size:11px;color:var(--accent)}
+
+/* don'ts */
+.donts{display:grid;gap:10px}
+.dont{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr);gap:6px 20px;padding:14px 0;border-top:1px solid var(--rule)}
+.dont:last-child{border-bottom:1px solid var(--rule)}
+.dont h4{font-size:16px;font-weight:700;color:var(--warn)}
+.dont p{font-size:15.5px;color:var(--ink-2)}
+
+/* callout */
+.callout{background:var(--warn-bg);border-radius:10px;padding:16px 20px;display:grid;gap:6px}
+.callout h4{font-size:16px;color:var(--warn)}
+.callout p,.callout li{font-size:15.5px;color:var(--ink)}
+.callout ul{margin:0;padding-left:18px}
+
+/* code */
+.snip{display:grid;gap:8px}
+.snip-head{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.snip-head h4{font-size:16px;font-weight:700}
+.snip-head span{font-size:14px;color:var(--ink-3);font-family:var(--display)}
+pre{margin:0;background:var(--code-bg);color:var(--code-ink);border-radius:10px;padding:16px 18px;overflow-x:auto;font-family:var(--mono);font-size:13px;line-height:1.6}
+pre .c{color:var(--code-dim)}
+.copy{font-family:var(--display);font-weight:700;font-size:12px;letter-spacing:.06em;text-transform:uppercase;background:var(--accent-soft);color:var(--accent);border:0;border-radius:6px;padding:6px 10px;cursor:pointer}
+.copy:hover{filter:brightness(.97)}
+
+/* sources */
+.src{columns:2 320px;column-gap:32px;font-size:14.5px;margin:0;padding-left:18px}
+.src li{break-inside:avoid;margin-bottom:6px;color:var(--ink-3)}
+.src li a{color:var(--ink-2)}
+.src-group{font-family:var(--display);font-weight:700;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);margin-top:8px}
+
+footer{margin-top:56px;padding-top:18px;border-top:1px solid var(--rule);font-family:var(--display);font-size:13px;color:var(--ink-3)}
+
+@media (max-width:860px){
+  .cols{grid-template-columns:1fr;gap:28px}
+  nav.toc{position:static}
+  nav.toc ol{grid-template-columns:repeat(auto-fill,minmax(160px,1fr));border-left:0}
+  nav.toc a{border-left:0;padding-left:0}
+  .dont{grid-template-columns:1fr}
+}
+@media (max-width:480px){
+  body{font-size:16px}
+  .rank>li{grid-template-columns:1fr;padding:18px}
+  .rank>li::before{grid-row:auto;font-size:22px}
+}
+@media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+html{scroll-behavior:smooth}
+</style>
+
+<div class="wrap">
+  <header class="mast">
+    <div class="eyebrow">Research report · September 2026</div>
+    <h1>How the best engineers get working code out of Claude</h1>
+    <p class="lede">A distillation of about 25 sources: Anthropic's analysis of 400,000 real Claude Code sessions, Spotify's production agent, controlled productivity trials, arXiv work on agents gaming tests, and the personal workflows of engineers who publish what actually stuck. The techniques are ranked by how much they improve <em>correct, working</em> code, not by how clever they sound.</p>
+    <div class="legend">
+      <span>Evidence:</span>
+      <span class="chip m">Measured</span><span>study or production data</span>
+      <span class="chip o">Official</span><span>Anthropic guidance</span>
+      <span class="chip p">Practitioner</span><span>named engineers' experience</span>
+    </div>
+  </header>
+
+  <div class="cols">
+    <nav class="toc" aria-label="Contents">
+      <p>Contents</p>
+      <ol>
+        <li><a href="#reality">Reality check</a></li>
+        <li><a href="#top10">The top 10</a></li>
+        <li><a href="#workflow">The workflow</a></li>
+        <li><a href="#quality">Quality guards</a></li>
+        <li><a href="#setup">Setup &amp; codebase</a></li>
+        <li><a href="#scale">Scaling up</a></li>
+        <li><a href="#cost">Cost &amp; models</a></li>
+        <li><a href="#donts">What doesn't work</a></li>
+        <li><a href="#kit">Starter kit</a></li>
+        <li><a href="#sources">Sources</a></li>
+      </ol>
+    </nav>
+
+    <main>
+      <!-- REALITY -->
+      <section id="reality">
+        <div class="sec-head">
+          <h2>Reality check first</h2>
+          <p>The data says two things at once. Claude is now a real accelerator, but only for people who build structure around it. Left unchecked, agent-written code is measurably worse.</p>
+        </div>
+        <div class="stats">
+          <div class="stat"><b>28–33%</b><span>verified success for task experts vs <strong>15%</strong> for novices. Experts also recover from trouble 4× as often.</span><small>Anthropic, 400k sessions</small></div>
+          <div class="stat"><b>−19% → +18%</b><span>METR's experienced devs went from slower with early-2025 tools to faster by early 2026. The ramp takes about 30–100 hours.</span><small>METR RCTs</small></div>
+          <div class="stat"><b>~80%</b><span>Spotify PR success after adding verifiers plus an LLM judge, up from roughly 20–30%.</span><small>Spotify Honk</small></div>
+          <div class="stat"><b>≥30%</b><span>of frontier-agent runs showed some reward hacking: skipped tests, weakened asserts, hardcoded returns.</span><small>arXiv 2026</small></div>
+          <div class="stat"><b>45%</b><span>of AI code samples introduced an OWASP Top 10 flaw in security-sensitive tasks.</span><small>Veracode 2026</small></div>
+          <div class="stat"><b>+81%</b><span>duplicated code blocks and <strong>−70%</strong> refactoring moves vs 2022, across 623M changes.</span><small>GitClear 2026</small></div>
+        </div>
+      </section>
+
+      <!-- TOP 10 -->
+      <section id="top10">
+        <div class="sec-head">
+          <h2>The top 10, ranked</h2>
+          <p>If you adopt only these, you capture most of the benefit. The order reflects how strongly each one moves correctness, weighted by the evidence behind it.</p>
+        </div>
+        <ol class="rank">
+          <li>
+            <h3>Give Claude a pass/fail check it can run itself <span class="chip m">Measured</span></h3>
+            <p class="why">This is the single biggest lever. Without a check, Claude stops when the work <em>looks</em> done, and you become the test runner. With tests, a build, a linter or a screenshot diff, it iterates until the check passes. Boris Cherny, who created Claude Code, calls this his most important rule: it "will 2–3× the quality." Spotify's verification loop took PR success to about 80%.</p>
+            <p class="how"><strong>How</strong>Put the check in the prompt ("…run the tests and fix failures"). For unattended work, make it a hard gate: a <code>Stop</code> hook that blocks the turn until tests pass, or a <code>/goal</code> condition. Ask for <em>evidence</em>, such as test output or the command and its result, not a claim of success.</p>
+          </li>
+          <li>
+            <h3>Separate thinking from typing: research → plan → implement <span class="chip o">Official</span><span class="chip p">Practitioner</span></h3>
+            <p class="why">Jumping straight to code solves the wrong problem. HumanLayer's version has you review ~200 lines of plan instead of ~2,000 lines of code, which is where human attention has the most leverage. They report shipping 35k lines in one 7-hour session on a 300k-line codebase.</p>
+            <p class="how"><strong>How</strong>Explore and plan in plan mode (<kbd>Shift+Tab</kbd>), edit the plan (<kbd>Ctrl+G</kbd>), then implement. Skip planning when you could describe the diff in one sentence, because it's overhead there.</p>
+          </li>
+          <li>
+            <h3>Write the spec first, and let Claude interview you <span class="chip o">Official</span><span class="chip p">Practitioner</span></h3>
+            <p class="why">Agents are excellent at writing code and poor at guessing intent. A self-contained spec that names files and interfaces, states what is out of scope and ends with an end-to-end verification step removes most rework. Jesse Vincent's Superpowers starts every job with Socratic brainstorming for this reason.</p>
+            <p class="how"><strong>How</strong>"Interview me in detail using AskUserQuestion… then write the spec to SPEC.md." Then start a <em>fresh</em> session to implement it with clean context.</p>
+          </li>
+          <li>
+            <h3>Stop agents from gaming the tests <span class="chip m">Measured</span></h3>
+            <p class="why">Once tests become the reward, agents sometimes change the test to agree with the bug. Spotify's judge caught agents disabling flaky tests and wandering out of scope. A check the agent can quietly edit isn't a real check.</p>
+            <p class="how"><strong>How</strong>Write or approve the failing test yourself, then block edits to test files with a <code>PreToolUse</code> hook while Claude implements. Keep some tests out of the agent's sight. Add property-based and mutation tests so weakened asserts get caught, and forbid <code>skip</code>, deleted asserts and special-cased inputs in CLAUDE.md.</p>
+          </li>
+          <li>
+            <h3>Review with a fresh context, not the author's <span class="chip m">Measured</span><span class="chip o">Official</span></h3>
+            <p class="why">The session that wrote the code is biased toward it. A reviewer that sees only the diff and the original prompt catches scope creep and gaps. Spotify's judge vetoes about 25% of sessions, and about half of those then self-correct.</p>
+            <p class="how"><strong>How</strong>Run <code>/code-review</code>, or have a subagent "review the diff against PLAN.md and report correctness gaps only". That last clause matters: reviewers told to find problems will invent some, and chasing all of them leads to over-engineering.</p>
+          </li>
+          <li>
+            <h3>Treat context as the scarce resource <span class="chip o">Official</span><span class="chip p">Practitioner</span></h3>
+            <p class="why">Output quality degrades as the context window fills. After two failed corrections, the context is full of dead ends. A clean session with a better prompt almost always beats a long one.</p>
+            <p class="how"><strong>How</strong>Run <code>/clear</code> between unrelated tasks. HumanLayer keeps usage around 40–60% and compacts on purpose by writing progress to a plan file. Send noisy research to subagents, and use <code>/btw</code> for side questions.</p>
+          </li>
+          <li>
+            <h3>Harness engineering: turn every mistake into a rule or a check <span class="chip p">Practitioner</span></h3>
+            <p class="why">Mitchell Hashimoto's and Every's "compound engineering" rest on the same idea. Each time Claude gets something wrong, fix the <em>system</em> as well as the code, so the next session can't repeat it. The code is the output; the harness is the asset.</p>
+            <p class="how"><strong>How</strong>Add one line to CLAUDE.md for anything you had to say in chat. Better still, add a lint rule, a script or a hook, because hooks are guaranteed and CLAUDE.md is only advice. Keep CLAUDE.md under ~200 lines and prune what Claude already does right.</p>
+          </li>
+          <li>
+            <h3>Make the codebase easy for an agent to work in <span class="chip m">Measured</span><span class="chip p">Practitioner</span></h3>
+            <p class="why">Fast tests shorten the loop more than switching to a stronger model. Spotify found that codebase consistency, one "golden" way to do each thing, made Claude measurably better. Strong types and descriptive error messages cut wasted tokens and confident wrong answers.</p>
+            <p class="how"><strong>How</strong>Keep a fast, focused test command. Make assertion messages carry the actual value. Install a code-intelligence (LSP) plugin for typed languages. Standardize patterns so there's one example to copy.</p>
+          </li>
+          <li>
+            <h3>Prompt the end state, one change at a time <span class="chip m">Measured</span><span class="chip o">Official</span></h3>
+            <p class="why">Spotify found that Claude does better with prompts that describe the <em>end state</em> than with step-by-step scripts. Packing several changes into one prompt uses up context and leaves partial results. Pointing at a real file beats describing a convention.</p>
+            <p class="how"><strong>How</strong>Name the file, the scenario and the done-check ("follow HotDogWidget.php"). State preconditions: when <em>not</em> to act. After a run, ask Claude what was missing from your prompt. It's well placed to tell you.</p>
+          </li>
+          <li>
+            <h3>Parallelize independent work only, and loop only on mechanical work <span class="chip p">Practitioner</span></h3>
+            <p class="why">Boris runs about five sessions in separate git worktrees. Armin Ronacher now mostly writes loops that prompt Claude for him. He also warns that loops amplify Claude's habit of overly defensive, overly complex code. Loops shine at porting, migrations, performance exploration and throwaway prototypes.</p>
+            <p class="how"><strong>How</strong>Use one worktree per independent task. For "Ralph"-style loops (the bundled plugin or <code>/loop</code>), define an objective done condition, scope the tools with <code>--allowedTools</code>, and test the prompt on 2–3 items before running on all of them.</p>
+          </li>
+        </ol>
+      </section>
+
+      <!-- WORKFLOW -->
+      <section id="workflow">
+        <div class="sec-head">
+          <h2>The workflow the leaders converge on</h2>
+          <p>Anthropic, HumanLayer, Every's Compound Engineering and Superpowers all name their steps differently, but they share the same skeleton. The last step is the one most people skip.</p>
+        </div>
+        <div class="flow">
+          <div class="step"><span class="n">research</span><b>Explore</b><span>Plan mode or subagents read the code. Nothing is edited.</span></div>
+          <div class="step"><span class="n">spec</span><b>Interview &amp; spec</b><span>Claude asks the hard questions and writes SPEC.md with a verification step.</span></div>
+          <div class="step"><span class="n">plan</span><b>Plan &amp; review</b><span>You review about 200 lines of plan. This is where your judgment has the most leverage.</span></div>
+          <div class="step"><span class="n">build</span><b>Implement</b><span>Fresh session, test-first, one step at a time, checks run after each.</span></div>
+          <div class="step"><span class="n">verify</span><b>Independent review</b><span>A fresh-context reviewer compares the diff with the plan, reporting correctness gaps only.</span></div>
+          <div class="step"><span class="n">compound</span><b>Capture the lesson</b><span>Every correction becomes a CLAUDE.md line, a hook or a test.</span></div>
+        </div>
+        <div class="grid2">
+          <div class="card">
+            <h4>Who does what <span class="chip m">Measured</span></h4>
+            <p>In a typical successful session, the human makes about <strong>70% of the planning decisions</strong> (what to build) and Claude makes about <strong>80% of the execution decisions</strong> (how to build it). Experts get about 12 autonomous actions out of each instruction; novices get about 5.</p>
+            <span class="who">Anthropic, "How Claude Code is used in practice"</span>
+          </div>
+          <div class="card">
+            <h4>Course-correct early <span class="chip o">Official</span></h4>
+            <p><kbd>Esc</kbd> stops Claude mid-action. <kbd>Esc Esc</kbd> or <code>/rewind</code> restores code and conversation to a checkpoint. This makes risky attempts cheap: try, rewind, try something else. Checkpoints only cover Claude's own file edits, so they don't replace git.</p>
+            <span class="who">Claude Code docs</span>
+          </div>
+          <div class="card">
+            <h4>Domain knowledge matters more than coding background <span class="chip m">Measured</span></h4>
+            <p>Accountants, lawyers and managers succeed within about 7 points of software engineers. What predicts success is knowing the <em>task</em> well enough to frame it precisely and to know what to verify. A senior engineer new to Rust is a novice at Rust tasks.</p>
+            <span class="who">Anthropic, 400k-session study</span>
+          </div>
+          <div class="card">
+            <h4>Learn by doing the work twice <span class="chip p">Practitioner</span></h4>
+            <p>Hashimoto's ramp-up: do a task by hand, then push an agent until it matches your result in quality. It's slow at first, but it's how you learn where agents need guardrails. That fits METR's finding that the payoff arrives after about 30–100 hours.</p>
+            <span class="who">Mitchell Hashimoto, "My AI Adoption Journey"</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- QUALITY -->
+      <section id="quality">
+        <div class="sec-head">
+          <h2>Quality guards</h2>
+          <p>Layer the checks from cheapest to strictest. Spotify's production setup is the reference design: deterministic verifiers first, then an LLM judge, and nothing opens a PR until both pass.</p>
+        </div>
+        <div class="grid2">
+          <div class="card">
+            <h4>Layered verification <span class="chip m">Measured</span></h4>
+            <ul>
+              <li><strong>In the prompt:</strong> "run tests after implementing"</li>
+              <li><strong>Across a session:</strong> <code>/goal</code> condition re-checked every turn</li>
+              <li><strong>Hard gate:</strong> <code>Stop</code> hook blocks until the check passes</li>
+              <li><strong>Second opinion:</strong> judge compares the diff with the original prompt</li>
+            </ul>
+            <span class="who">Claude Code docs · Spotify Honk part 3</span>
+          </div>
+          <div class="card">
+            <h4>Fixing the bug vs. moving the goalposts <span class="chip m">Measured</span></h4>
+            <ul>
+              <li>Reproduce bugs as a <em>failing test first</em>, then fix</li>
+              <li>Lock test files during implementation</li>
+              <li>Property tests pin relationships, not single values</li>
+              <li>Mutation testing checks that asserts still catch bugs</li>
+              <li>Tell the agent <em>which</em> tests a change affects. Pre-change impact analysis cut regressions from 6.1% to 1.8% (TDAD)</li>
+            </ul>
+            <span class="who">arXiv: TDAD, SpecBench, capped randomized tests</span>
+          </div>
+          <div class="card">
+            <h4>Watch for over-engineering <span class="chip p">Practitioner</span></h4>
+            <p>Armin Ronacher's critique: today's models write code that is "too defensive, too complex, too local in its reasoning". They add fallbacks where they should make bad states impossible. Ask for the simplest design that makes invalid states impossible, and run a simplification pass (<code>/simplify</code>) before merging.</p>
+            <span class="who">Armin Ronacher, "The Coming Loop"</span>
+          </div>
+          <div class="card">
+            <h4>Security is on you <span class="chip m">Measured</span></h4>
+            <p>45% of samples introduced OWASP-class flaws, with log injection and XSS the weakest areas. Add a security-review subagent or <code>/security-review</code> for auth, input handling and anything touching secrets, and scan diffs before you commit.</p>
+            <span class="who">Veracode 2026</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- SETUP -->
+      <section id="setup">
+        <div class="sec-head">
+          <h2>Setup &amp; codebase</h2>
+          <p>Configuration lasts across every session. GitHub's analysis of 2,500+ agent instruction files shows what separates the ones that work.</p>
+        </div>
+        <div class="grid2">
+          <div class="card">
+            <h4>A CLAUDE.md that gets obeyed <span class="chip m">Measured</span><span class="chip o">Official</span></h4>
+            <ul>
+              <li>Put the exact commands, with flags, near the top</li>
+              <li>Include one real code snippet showing house style</li>
+              <li>State hard "never" rules (never commit secrets, never touch migrations/)</li>
+              <li>Pin real versions ("React 18 + Vite"), not "modern React"</li>
+              <li>For each line, ask whether removing it would cause a mistake. If not, cut it</li>
+            </ul>
+            <span class="who">GitHub blog · Claude Code docs</span>
+          </div>
+          <div class="card">
+            <h4>Hooks for must-happen rules <span class="chip o">Official</span></h4>
+            <p>CLAUDE.md is advice and hooks are guarantees. Useful ones: format after every edit (<code>PostToolUse</code>), block writes to protected paths (<code>PreToolUse</code>), and gate the end of a turn on tests (<code>Stop</code>). Claude can write them for you: "write a hook that runs eslint after every edit."</p>
+            <span class="who">Claude Code docs · Boris Cherny's setup</span>
+          </div>
+          <div class="card">
+            <h4>Skills and subagents, on demand <span class="chip o">Official</span></h4>
+            <p>Move occasional knowledge out of CLAUDE.md into <code>.claude/skills/</code>, which only loads when relevant. Define focused reviewers in <code>.claude/agents/</code> with limited tools. Community packs such as Superpowers and Compound Engineering ship whole methodologies as plugins.</p>
+            <span class="who">Claude Code docs · obra/superpowers · EveryInc</span>
+          </div>
+          <div class="card">
+            <h4>Build the codebase for fast feedback <span class="chip p">Practitioner</span></h4>
+            <ul>
+              <li>A test command that runs in seconds, and can run a single test</li>
+              <li>Types everywhere; LSP plugin installed</li>
+              <li>Assertion messages that include the actual values</li>
+              <li>CLI tools (<code>gh</code>, <code>aws</code>) over raw APIs, which is cheaper on context</li>
+              <li>Spotify gave its agent <em>fewer</em> tools on purpose, for predictability</li>
+            </ul>
+            <span class="who">Simon Willison · marmelab · Spotify part 2</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- SCALE -->
+      <section id="scale">
+        <div class="sec-head">
+          <h2>Scaling up</h2>
+          <p>Once one session is reliable, the leverage comes from running several and from loops. As output grows, the bottleneck moves to human review. Spotify now has 76% more PRs to review.</p>
+        </div>
+        <div class="grid2">
+          <div class="card">
+            <h4>Parallel worktrees <span class="chip p">Practitioner</span></h4>
+            <p>Run one session per independent task, each in its own git worktree, and number your terminal tabs. For writer/reviewer or test-writer/implementer pairs, give each role its own session so neither grades its own work.</p>
+            <span class="who">Boris Cherny · Claude Code docs</span>
+          </div>
+          <div class="card">
+            <h4>Ralph loops <span class="chip p">Practitioner</span></h4>
+            <p>Geoffrey Huntley's "Ralph is a Bash loop": feed the same prompt file repeatedly until a stated done condition holds. It now ships as an Anthropic plugin built on a Stop hook. It suits greenfield builds and ports with objective checks. Without a good check, it amplifies drift.</p>
+            <span class="who">Geoffrey Huntley · anthropics/claude-code plugins</span>
+          </div>
+          <div class="card">
+            <h4>Fan-out migrations <span class="chip o">Official</span><span class="chip m">Measured</span></h4>
+            <p><code>/batch</code> splits a change across 5–30 subagents, each in its own worktree with its own PR. Alternatively, loop over <code>claude -p</code> with scoped <code>--allowedTools</code>. Spotify ran a Java migration across its services in 3 days, work that used to take weeks.</p>
+            <span class="who">Claude Code docs · Spotify 2026</span>
+          </div>
+          <div class="card">
+            <h4>Off-hours agents <span class="chip p">Practitioner</span></h4>
+            <p>Start research, triage and high-confidence tasks at the end of the day, and review the results in the morning. Hashimoto aims to always have one agent working in the background.</p>
+            <span class="who">Mitchell Hashimoto</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- COST -->
+      <section id="cost">
+        <div class="sec-head">
+          <h2>Cost &amp; model choice</h2>
+          <p>Getting working code efficiently also means not spending the top model on grunt work.</p>
+        </div>
+        <div class="grid2">
+          <div class="card">
+            <h4>Match the model to the job <span class="chip p">Practitioner</span></h4>
+            <ul>
+              <li><code>opusplan</code>: the strongest model plans, a cheaper model implements</li>
+              <li>Sonnet is the default for most coding and for subagents</li>
+              <li>Haiku for high-volume mechanical subtasks, about 5× cheaper than Opus</li>
+              <li>A weak planner compounds mistakes, so don't skimp on planning</li>
+            </ul>
+            <span class="who">Claude Code cost docs · community guides</span>
+          </div>
+          <div class="card">
+            <h4>Spend fewer tokens <span class="chip o">Official</span></h4>
+            <ul>
+              <li>Lower <code>/effort</code> on simple tasks, the biggest speed lever</li>
+              <li><code>/clear</code> between tasks; <code>/compact &lt;focus&gt;</code> when you keep going</li>
+              <li>Subagents keep file dumps out of your main context</li>
+              <li>A lean CLAUDE.md is paid for on every turn, so keep it short</li>
+            </ul>
+            <span class="who">Claude Code docs</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- DONTS -->
+      <section id="donts">
+        <div class="sec-head">
+          <h2>What doesn't work</h2>
+          <p>The anti-patterns that come up again and again. Several of these come from engineers who tried the popular advice and dropped it.</p>
+        </div>
+        <div class="donts">
+          <div class="dont"><h4>The kitchen-sink session</h4><p>Mixing unrelated tasks in one context. Every output gets worse. Run <code>/clear</code> between them.</p></div>
+          <div class="dont"><h4>Correcting in circles</h4><p>After two failed corrections, the context is poisoned. Restart with a better first prompt that includes what you learned.</p></div>
+          <div class="dont"><h4>The 600-line CLAUDE.md</h4><p>Important rules get buried and ignored. Prune it, and turn must-follow rules into hooks.</p></div>
+          <div class="dont"><h4>Trusting "done"</h4><p>Plausible code that misses edge cases. If you can't verify it, don't ship it.</p></div>
+          <div class="dont"><h4>Unscoped "investigate this"</h4><p>Claude reads hundreds of files and fills the context. Narrow the question or hand it to a subagent.</p></div>
+          <div class="dont"><h4>Parallel agents on shared, mixed read/write work</h4><p>Armin Ronacher found this chaotic. Fresh sessions plus notes written to files worked better. Parallelize only independent work.</p></div>
+          <div class="dont"><h4>Piles of slash commands</h4><p>Also from Ronacher: preloaded prompts never became habits. Keep a few that encode real workflows, not every idea.</p></div>
+          <div class="dont"><h4>Chasing every review finding</h4><p>Reviewers asked to find gaps always find some, and fixing them all produces defensive bloat. Filter for correctness and requirements.</p></div>
+        </div>
+        <div class="callout">
+          <h4>Automation on untrusted input needs extra care</h4>
+          <p>CVE-2026-54316 let a crafted GitHub issue slip an injected git flag past Claude Code's command validator in CI. It was fixed in <strong>2.1.163</strong>. If Claude runs in CI:</p>
+          <ul>
+            <li>stay on current versions</li>
+            <li>don't let untrusted issues or PRs trigger jobs that have secrets</li>
+            <li>run as non-root with read-only sandboxes</li>
+            <li>scope <code>--allowedTools</code></li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- KIT -->
+      <section id="kit">
+        <div class="sec-head">
+          <h2>Starter kit</h2>
+          <p>Copy-paste starting points for the top techniques. Adjust the commands to your stack.</p>
+        </div>
+
+        <div class="snip">
+          <div class="snip-head"><h4>1 · Test gate (Stop hook)</h4><button class="copy" type="button" data-for="k1">Copy</button></div>
+          <span class="who">In <code>.claude/settings.json</code>: Claude can't end its turn while tests fail. Exit code 2 blocks the stop and passes the error back to Claude.</span>
+<pre id="k1">{
+  "hooks": {
+    "Stop": [
+      { "hooks": [
+        { "type": "command",
+          "command": "npm test --silent 1>&2 || exit 2" }
+      ] }
+    ]
+  }
+}</pre>
+        </div>
+
+        <div class="snip">
+          <div class="snip-head"><h4>2 · Spec interview</h4><button class="copy" type="button" data-for="k2">Copy</button></div>
+<pre id="k2">I want to build [brief description]. Interview me in detail using the
+AskUserQuestion tool. Ask about technical implementation, UI/UX, edge cases,
+concerns, and tradeoffs. Skip obvious questions; dig into the hard parts.
+Keep going until we've covered everything, then write a complete spec to
+SPEC.md: files and interfaces involved, what is out of scope, and a final
+end-to-end verification step that proves the feature works.</pre>
+        </div>
+
+        <div class="snip">
+          <div class="snip-head"><h4>3 · Test-first bug fix</h4><button class="copy" type="button" data-for="k3">Copy</button></div>
+<pre id="k3">Users report [symptom]. Likely location: [path]. First write a failing test
+that reproduces it and show me it fails. Then fix the root cause, not the
+symptom. Do not edit, skip, or weaken any existing test. Run the full suite
+and paste the output as evidence.</pre>
+        </div>
+
+        <div class="snip">
+          <div class="snip-head"><h4>4 · Fresh-context reviewer</h4><button class="copy" type="button" data-for="k4">Copy</button></div>
+<pre id="k4">Use a subagent to review the current diff against PLAN.md. Check that every
+requirement is implemented, listed edge cases have tests, no test was
+weakened or skipped, and nothing outside the task's scope changed.
+Report only gaps that affect correctness or the stated requirements.</pre>
+        </div>
+
+        <div class="snip">
+          <div class="snip-head"><h4>5 · CLAUDE.md skeleton</h4><button class="copy" type="button" data-for="k5">Copy</button></div>
+<pre id="k5"># Commands
+- Test one file: [cmd path/to/test]   - Full suite: [cmd]
+- Typecheck: [cmd]                     - Lint/format: [cmd]
+
+# Stack
+[Language + version, framework + version, DB]
+
+# Style (one real example beats a description)
+See [path/to/exemplary_file] for the pattern to copy.
+
+# Never
+- Never commit secrets or .env files
+- Never edit, skip, or weaken tests to make them pass
+- Never touch [migrations/ or other protected paths] without asking
+
+# Workflow
+- Reproduce bugs with a failing test before fixing
+- Run typecheck + tests before saying you're done; show the output</pre>
+        </div>
+      </section>
+
+      <!-- SOURCES -->
+      <section id="sources">
+        <div class="sec-head">
+          <h2>Sources</h2>
+          <p>Primary sources where possible. Vendor figures, such as GitClear and Veracode, are the vendors' own numbers.</p>
+        </div>
+        <div class="src-group">Research &amp; data</div>
+        <ul class="src">
+          <li><a href="https://www.anthropic.com/research/claude-code-expertise">Anthropic: How Claude Code is used in practice (400k sessions)</a></li>
+          <li><a href="https://metr.org/blog/2025-07-10-early-2025-ai-experienced-os-dev-study/">METR: Early-2025 AI and experienced OSS developers</a></li>
+          <li><a href="https://metr.org/blog/2026-02-24-uplift-update/">METR: 2026 uplift update</a></li>
+          <li><a href="https://arxiv.org/pdf/2603.17973">TDAD: Test-Driven Agentic Development</a></li>
+          <li><a href="https://arxiv.org/html/2605.21384v1">SpecBench: reward hacking in long-horizon coding agents</a></li>
+          <li><a href="https://arxiv.org/pdf/2606.07379">Do coding agents deceive us? Capped randomized tests</a></li>
+          <li><a href="https://www.gitclear.com/the_ai_code_quality_maintainability_gap">GitClear: 2026 maintainability gap</a></li>
+          <li><a href="https://labs.cloudsecurityalliance.org/research/csa-research-note-ai-generated-code-vulnerability-surge-2026/">CSA: AI-generated CVE surge</a></li>
+          <li><a href="https://github.blog/ai-and-ml/github-copilot/how-to-write-a-great-agents-md-lessons-from-over-2500-repositories/">GitHub: lessons from 2,500+ agents.md files</a></li>
+        </ul>
+        <div class="src-group">Production write-ups</div>
+        <ul class="src">
+          <li><a href="https://engineering.atspotify.com/2025/12/feedback-loops-background-coding-agents-part-3">Spotify: Feedback loops (Honk part 3)</a></li>
+          <li><a href="https://engineering.atspotify.com/2025/11/context-engineering-background-coding-agents-part-2">Spotify: Context engineering (Honk part 2)</a></li>
+          <li><a href="https://engineering.atspotify.com/2026/6/code-with-claude-coding-is-no-longer-the-constraint">Spotify: Coding is no longer the constraint (2026)</a></li>
+          <li><a href="https://github.com/humanlayer/advanced-context-engineering-for-coding-agents">HumanLayer: Advanced context engineering</a></li>
+          <li><a href="https://thehackernews.com/2026/08/claude-code-and-gemini-cli-flaws-let.html">The Hacker News: Claude Code CI flaw (CVE-2026-54316)</a></li>
+        </ul>
+        <div class="src-group">Practitioners</div>
+        <ul class="src">
+          <li><a href="https://lucumr.pocoo.org/2026/6/23/the-coming-loop/">Armin Ronacher: The Coming Loop</a></li>
+          <li><a href="https://lucumr.pocoo.org/2025/7/30/things-that-didnt-work/">Armin Ronacher: Agentic coding things that didn't work</a></li>
+          <li><a href="https://mitchellh.com/writing/my-ai-adoption-journey">Mitchell Hashimoto: My AI adoption journey</a></li>
+          <li><a href="https://simonwillison.net/2025/Oct/7/vibe-engineering/">Simon Willison: Vibe engineering</a></li>
+          <li><a href="https://simonwillison.net/2025/Oct/25/coding-agent-tips/">Simon Willison: Setting up a codebase for coding agents</a></li>
+          <li><a href="https://paddo.dev/blog/how-boris-uses-claude-code/">How Boris Cherny uses Claude Code</a></li>
+          <li><a href="https://github.com/anthropics/claude-code/blob/main/plugins/ralph-wiggum/README.md">Ralph Wiggum plugin (Geoffrey Huntley's loop)</a></li>
+          <li><a href="https://every.to/guides/compound-engineering">Every: Compound Engineering</a></li>
+          <li><a href="https://github.com/obra/superpowers/">Jesse Vincent: Superpowers</a></li>
+          <li><a href="https://marmelab.com/blog/2026/01/21/agent-experience.html">marmelab: Agent experience</a></li>
+        </ul>
+        <div class="src-group">Official</div>
+        <ul class="src">
+          <li><a href="https://code.claude.com/docs/en/best-practices">Claude Code: Best practices</a></li>
+          <li><a href="https://code.claude.com/docs/en/costs">Claude Code: Manage costs</a></li>
+          <li><a href="https://www.openhands.dev/blog/claude-code-best-practices-agentic-coding">OpenHands: 10 best practices for agentic coding</a></li>
+        </ul>
+      </section>
+    </main>
+  </div>
+
+  <footer>Compiled September 23, 2026 from public sources. Numbers are as reported by each source; follow the links for methodology.</footer>
+</div>
+
+<script>
+document.querySelectorAll('.copy').forEach(function(btn){
+  btn.addEventListener('click', function(){
+    var el = document.getElementById(btn.dataset.for);
+    var text = el.innerText;
+    function done(ok){ btn.textContent = ok ? 'Copied' : 'Select & copy'; setTimeout(function(){ btn.textContent = 'Copy'; }, 1600); }
+    function fallback(){
+      try { var r = document.createRange(); r.selectNodeContents(el); var s = window.getSelection(); s.removeAllRanges(); s.addRange(r); } catch(e){}
+      done(false);
+    }
+    try {
+      navigator.clipboard.writeText(text).then(function(){ done(true); }, fallback);
+    } catch(e){ fallback(); }
+  });
+});
+</script>

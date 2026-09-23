@@ -1,0 +1,11 @@
+# Plugins from claude-plugins-official, installed by setup.ps1 (one per line).
+# LSP plugins need their language servers on PATH; setup.ps1 installs them via npm.
+pyright-lsp
+typescript-lsp
+security-guidance
+context7
+pr-review-toolkit
+code-simplifier
+hookify
+claude-md-management
+playwright

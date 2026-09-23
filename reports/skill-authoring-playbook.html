@@ -1,0 +1,789 @@
+<title>Skill Authoring Playbook</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@500;700;800&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+:root{
+  --ground:#F3F5F4; --surface:#FFFFFF; --sunk:#E6EBE9;
+  --ink:#131B1A; --ink-2:#3A4745; --ink-3:#687673;
+  --rule:#D3DCD9; --accent:#146B73; --accent-soft:#DDEFEF;
+  --measured:#0F7A55; --measured-bg:#DDF3EA;
+  --official:#2B47C9; --official-bg:#E3E8FB;
+  --practice:#8A5A00; --practice-bg:#FBEFD5;
+  --synth:#6B3FA0; --synth-bg:#EEE6F8;
+  --warn:#A3321F; --warn-bg:#FBE5E0;
+  --code-bg:#14201F; --code-ink:#E4ECEA; --code-dim:#86A09C;
+  --display:"Schibsted Grotesk", "Segoe UI", system-ui, sans-serif;
+  --body:"Source Serif 4", Georgia, "Times New Roman", serif;
+  --mono:"JetBrains Mono", ui-monospace, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --ground:#0E1414; --surface:#161F1F; --sunk:#1D2828;
+    --ink:#E6EEEC; --ink-2:#B4C3C0; --ink-3:#839490;
+    --rule:#283635; --accent:#5CC4CC; --accent-soft:#16302F;
+    --measured:#5FD0A3; --measured-bg:#123126;
+    --official:#8FA4FF; --official-bg:#1F2845;
+    --practice:#F0BE5E; --practice-bg:#33280F;
+    --synth:#C7A6F2; --synth-bg:#2A1F3B;
+    --warn:#FF8C77; --warn-bg:#3A1A14;
+    --code-bg:#090E0E; --code-ink:#E4ECEA; --code-dim:#7D9692;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --ground:#0E1414; --surface:#161F1F; --sunk:#1D2828;
+  --ink:#E6EEEC; --ink-2:#B4C3C0; --ink-3:#839490;
+  --rule:#283635; --accent:#5CC4CC; --accent-soft:#16302F;
+  --measured:#5FD0A3; --measured-bg:#123126;
+  --official:#8FA4FF; --official-bg:#1F2845;
+  --practice:#F0BE5E; --practice-bg:#33280F;
+  --synth:#C7A6F2; --synth-bg:#2A1F3B;
+  --warn:#FF8C77; --warn-bg:#3A1A14;
+  --code-bg:#090E0E; --code-ink:#E4ECEA; --code-dim:#7D9692;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--ground);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.6;padding-inline:16px;padding-block:0 64px}
+a{color:var(--accent);text-underline-offset:2px}
+a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:3px}
+.wrap{max-width:1120px;margin:0 auto}
+h1,h2,h3,h4{font-family:var(--display);line-height:1.15;text-wrap:balance;margin:0}
+code,kbd{font-family:var(--mono);font-size:.84em;background:var(--sunk);padding:.1em .35em;border-radius:4px}
+p{margin:0}
+
+.mast{padding-block:48px 28px;border-bottom:1px solid var(--rule);display:grid;gap:18px}
+.eyebrow{font-family:var(--display);font-weight:700;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
+.mast h1{font-size:clamp(34px,5.4vw,58px);font-weight:800;letter-spacing:-.02em;max-width:17ch}
+.lede{font-size:19px;color:var(--ink-2);max-width:66ch}
+.legend{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center;font-family:var(--display);font-size:13px;color:var(--ink-3)}
+.chip{display:inline-flex;align-items:center;gap:6px;font-family:var(--display);font-weight:700;font-size:11px;letter-spacing:.08em;text-transform:uppercase;padding:3px 8px;border-radius:999px;white-space:nowrap}
+.chip.m{color:var(--measured);background:var(--measured-bg)}
+.chip.o{color:var(--official);background:var(--official-bg)}
+.chip.p{color:var(--practice);background:var(--practice-bg)}
+.chip.s{color:var(--synth);background:var(--synth-bg)}
+
+.cols{display:grid;grid-template-columns:220px minmax(0,1fr);gap:48px;padding-top:36px}
+nav.toc{position:sticky;top:calc(env(safe-area-inset-top,0px) + 20px);align-self:start;font-family:var(--display);font-size:14px}
+nav.toc p{font-weight:700;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);margin-bottom:10px}
+nav.toc ol{list-style:none;margin:0;padding:0;display:grid;gap:2px;border-left:1px solid var(--rule)}
+nav.toc a{display:block;padding:5px 0 5px 14px;color:var(--ink-2);text-decoration:none;margin-left:-1px;border-left:2px solid transparent}
+nav.toc a:hover{color:var(--ink);border-left-color:var(--accent)}
+main{display:grid;gap:64px;min-width:0}
+section{display:grid;gap:22px;scroll-margin-top:24px}
+.sec-head{display:grid;gap:8px}
+.sec-head h2{font-size:clamp(26px,3.2vw,34px);font-weight:800;letter-spacing:-.01em}
+.sec-head p{color:var(--ink-2);max-width:66ch}
+
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1px;background:var(--rule);border:1px solid var(--rule);border-radius:10px;overflow:hidden}
+.stat{background:var(--surface);padding:18px 18px 16px;display:grid;gap:6px;align-content:start}
+.stat b{font-family:var(--display);font-size:30px;font-weight:800;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.stat span{font-size:15px;color:var(--ink-2);line-height:1.45}
+.stat small{font-family:var(--display);font-size:12px;color:var(--ink-3)}
+.stat b.neg{color:var(--warn)}
+
+.rank{list-style:none;margin:0;padding:0;display:grid;gap:14px;counter-reset:r}
+.rank>li{background:var(--surface);border:1px solid var(--rule);border-radius:10px;padding:20px 22px;display:grid;grid-template-columns:44px minmax(0,1fr);gap:4px 16px;counter-increment:r}
+.rank>li::before{content:counter(r);grid-row:1 / span 3;font-family:var(--display);font-weight:800;font-size:28px;color:var(--accent);line-height:1;padding-top:2px;font-variant-numeric:tabular-nums}
+.rank>li:first-child{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+.rank h3{font-size:20px;font-weight:700;display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center}
+.rank .why{color:var(--ink-2);max-width:68ch}
+.rank .how{font-size:15.5px;color:var(--ink-2);border-top:1px dashed var(--rule);padding-top:10px;margin-top:8px}
+.rank .how strong{font-family:var(--display);font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);margin-right:6px}
+
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px}
+.card{background:var(--surface);border:1px solid var(--rule);border-radius:10px;padding:18px 20px;display:grid;gap:10px;align-content:start}
+.card h4{font-size:17px;font-weight:700;display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between}
+.card p,.card li{font-size:15.5px;color:var(--ink-2)}
+.card ul{margin:0;padding-left:18px;display:grid;gap:4px}
+.who{font-family:var(--display);font-size:12.5px;color:var(--ink-3)}
+
+/* compare table */
+.tbl-wrap{overflow-x:auto;border:1px solid var(--rule);border-radius:10px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;min-width:560px;font-size:15px}
+th,td{text-align:left;padding:11px 14px;border-bottom:1px solid var(--rule);vertical-align:top}
+th{font-family:var(--display);font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);background:var(--sunk)}
+tr:last-child td{border-bottom:0}
+td:first-child{font-family:var(--mono);font-size:13px;white-space:nowrap;color:var(--ink)}
+td{color:var(--ink-2)}
+.good{color:var(--measured);font-weight:600}
+.bad{color:var(--warn);font-weight:600}
+
+/* pipeline */
+.pipe{list-style:none;margin:0;padding:0;display:grid;gap:0;border:1px solid var(--rule);border-radius:10px;overflow:hidden;background:var(--surface)}
+.pipe li{display:grid;grid-template-columns:150px minmax(0,1fr) auto;gap:6px 18px;padding:14px 18px;border-bottom:1px solid var(--rule);align-items:baseline}
+.pipe li:last-child{border-bottom:0}
+.pipe .stage{font-family:var(--display);font-weight:700;font-size:14px;color:var(--accent)}
+.pipe .what{font-size:15.5px;color:var(--ink-2)}
+.pipe .gate{font-family:var(--mono);font-size:11.5px;color:var(--ink-3);white-space:nowrap}
+
+.donts{display:grid;gap:0}
+.dont{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr);gap:6px 20px;padding:14px 0;border-top:1px solid var(--rule)}
+.dont:last-child{border-bottom:1px solid var(--rule)}
+.dont h4{font-size:16px;font-weight:700;color:var(--warn)}
+.dont p{font-size:15.5px;color:var(--ink-2)}
+
+.snip{display:grid;gap:8px}
+.snip-head{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.snip-head h4{font-size:16px;font-weight:700}
+pre{margin:0;background:var(--code-bg);color:var(--code-ink);border-radius:10px;padding:16px 18px;overflow-x:auto;font-family:var(--mono);font-size:13px;line-height:1.6}
+.copy{font-family:var(--display);font-weight:700;font-size:12px;letter-spacing:.06em;text-transform:uppercase;background:var(--accent-soft);color:var(--accent);border:0;border-radius:6px;padding:6px 10px;cursor:pointer}
+
+.src{columns:2 320px;column-gap:32px;font-size:14.5px;margin:0;padding-left:18px}
+.src li{break-inside:avoid;margin-bottom:6px;color:var(--ink-3)}
+.src li a{color:var(--ink-2)}
+.src-group{font-family:var(--display);font-weight:700;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);margin-top:8px}
+footer{margin-top:56px;padding-top:18px;border-top:1px solid var(--rule);font-family:var(--display);font-size:13px;color:var(--ink-3)}
+
+@media (max-width:860px){
+  .cols{grid-template-columns:1fr;gap:28px}
+  nav.toc{position:static}
+  nav.toc ol{grid-template-columns:repeat(auto-fill,minmax(160px,1fr));border-left:0}
+  nav.toc a{border-left:0;padding-left:0}
+  .dont{grid-template-columns:1fr}
+  .pipe li{grid-template-columns:1fr}
+}
+@media (max-width:480px){
+  body{font-size:16px}
+  .rank>li{grid-template-columns:1fr;padding:18px}
+  .rank>li::before{grid-row:auto;font-size:22px}
+}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+
+<div class="wrap">
+  <header class="mast">
+    <div class="eyebrow">Research report · September 2026</div>
+    <h1>How to build and write skills that actually work</h1>
+    <p class="lede">About 20 sources: Anthropic's authoring guide and its own <code>skill-creator</code> skill, benchmarks that measure whether skills help (SkillsBench, SkillJuror), security audits of more than 35,000 skills, and practitioner methods such as Jesse Vincent's test-driven skill writing. The last sections turn it into a pipeline for an internal skills registry.</p>
+    <div class="legend">
+      <span>Evidence:</span>
+      <span class="chip m">Measured</span><span>benchmark or audit data</span>
+      <span class="chip o">Official</span><span>Anthropic guidance</span>
+      <span class="chip p">Practitioner</span><span>named experts</span>
+      <span class="chip s">Synthesis</span><span>my recommendation from the above</span>
+    </div>
+  </header>
+
+  <div class="cols">
+    <nav class="toc" aria-label="Contents">
+      <p>Contents</p>
+      <ol>
+        <li><a href="#reality">Reality check</a></li>
+        <li><a href="#top10">The top 10</a></li>
+        <li><a href="#anatomy">Anatomy &amp; rules</a></li>
+        <li><a href="#description">The description</a></li>
+        <li><a href="#writing">Writing the body</a></li>
+        <li><a href="#testing">Testing &amp; iteration</a></li>
+        <li><a href="#injection">Sanitization &amp; injection</a></li>
+        <li><a href="#registry">For a registry</a></li>
+        <li><a href="#donts">Anti-patterns</a></li>
+        <li><a href="#kit">Templates</a></li>
+        <li><a href="#sources">Sources</a></li>
+      </ol>
+    </nav>
+
+    <main>
+      <section id="reality">
+        <div class="sec-head">
+          <h2>Reality check first</h2>
+          <p>Skills measurably help, but only when an expert writes them and tests prove they help. Skills written casually or generated by the model can make results worse, and a registry is an attack surface.</p>
+        </div>
+        <div class="stats">
+          <div class="stat"><b>+16.6 pts</b><span>average pass rate from <strong>human-curated</strong> skills (33.9% → 50.5%) across 86 tasks and 7,308 runs.</span><small>SkillsBench</small></div>
+          <div class="stat"><b class="neg">−8 to −11</b><span>points from skills the model <strong>wrote for itself</strong>, which did worse than having no skill at all.</span><small>SkillsBench</small></div>
+          <div class="stat"><b class="neg">16 of 84</b><span>tasks got <strong>worse</strong> even with curated skills. Test every skill against a baseline without it.</span><small>SkillsBench</small></div>
+          <div class="stat"><b>+4.1%</b><span>more passing runs when a skill is split into a short root file plus references, but it hurt tasks that need exact formats or thresholds.</span><small>SkillJuror</small></div>
+          <div class="stat"><b class="neg">26.1%</b><span>of 31,132 public skills had a vulnerability. Skills with scripts were <strong>2.12×</strong> as likely to have one.</span><small>arXiv 2601.10338</small></div>
+          <div class="stat"><b class="neg">13.4%</b><span>of ~4,000 audited skills had a critical issue: malware, prompt injection, or exposed secrets.</span><small>Snyk ToxicSkills</small></div>
+        </div>
+      </section>
+
+      <section id="top10">
+        <div class="sec-head">
+          <h2>The top 10, ranked</h2>
+          <p>These are ordered by how much each one decides whether a skill helps or hurts.</p>
+        </div>
+        <ol class="rank">
+          <li>
+            <h3>Watch it fail without the skill first (eval-first) <span class="chip m">Measured</span><span class="chip o">Official</span><span class="chip p">Practitioner</span></h3>
+            <p class="why">Anthropic, <code>skill-creator</code> and Jesse Vincent all say the same thing: run Claude on real tasks <em>without</em> the skill, write down exactly where it fails, and write only enough to fix those failures. In SkillsBench, 1 in 5 tasks got worse with a skill, so a skill that hasn't been measured against a baseline might be doing harm. Vincent's rule: "If you didn't watch an agent fail without the skill, you don't know if the skill teaches the right thing."</p>
+            <p class="how"><strong>How</strong>Write at least 3 realistic eval prompts, run each <em>with</em> and <em>without</em> the skill, and compare. Keep the skill only if the with-skill runs are clearly better.</p>
+          </li>
+          <li>
+            <h3>The content must come from a human expert <span class="chip m">Measured</span></h3>
+            <p class="why">Curated skills added about 16 points; skills the model generated for itself took away 8–11. A skill's value is the knowledge Claude <em>doesn't</em> already have: your internal systems, rules, gotchas and preferences. Claude is very good at <em>formatting</em> a skill, and it can't make up your organization's knowledge.</p>
+            <p class="how"><strong>How</strong>Do the real task with Claude first, notice what context you had to supply, then ask Claude to turn <em>that</em> into a skill. You provide the facts; Claude provides the structure.</p>
+          </li>
+          <li>
+            <h3>Write the description as trigger conditions, not a summary <span class="chip o">Official</span><span class="chip p">Practitioner</span></h3>
+            <p class="why">Until a skill triggers, the description is the only part Claude sees, and Claude tends to <em>under</em>-trigger skills. There's a less obvious trap too: if the description summarizes the workflow, Claude acts on the summary and skips the body.</p>
+            <p class="how"><strong>How</strong>Write in the third person. Say what it does <em>and</em> when to use it, with the actual terms users type: file types, tool names, error messages. Make it a little pushy ("…even if they don't say 'dashboard'"). Never describe the steps in it.</p>
+          </li>
+          <li>
+            <h3>Be concise: Claude is already smart <span class="chip o">Official</span></h3>
+            <p class="why">Once loaded, every token of the skill competes with the conversation. Explaining what a PDF is, or how libraries work, is wasted. Only add what Claude couldn't know or reliably work out.</p>
+            <p class="how"><strong>How</strong>Keep SKILL.md under 500 lines. For every paragraph, ask whether Claude actually needs it. Vincent aims for under 200 words for skills that load often.</p>
+          </li>
+          <li>
+            <h3>Split it the right way <span class="chip m">Measured</span><span class="chip o">Official</span></h3>
+            <p class="why">A short SKILL.md that works like a table of contents, with reference files loaded on demand, raised agent use of resources from 1.2 to 3.9 per run and improved results. The exception: when success depends on <em>exact</em> formats, thresholds or long pipelines, the details belong in SKILL.md itself.</p>
+            <p class="how"><strong>How</strong>Link reference files <em>directly</em> from SKILL.md and nest no deeper, because Claude may only skim nested files. Give files over 100 lines a table of contents. Organize by domain (<code>reference/finance.md</code>, <code>reference/sales.md</code>).</p>
+          </li>
+          <li>
+            <h3>Match the level of freedom to how fragile the task is <span class="chip o">Official</span></h3>
+            <p class="why">Anthropic's analogy: on a narrow bridge with cliffs, give exact instructions; in an open field, give direction and trust Claude. A database migration gets "run exactly this script"; a code review gets heuristics.</p>
+            <p class="how"><strong>How</strong>For each step, choose: plain guidance (high freedom), a template or parameterized script (medium), or an exact command with "don't change the flags" (low). Give one default plus an escape hatch, never a menu of five libraries.</p>
+          </li>
+          <li>
+            <h3>Put deterministic work in scripts <span class="chip o">Official</span><span class="chip p">Practitioner</span></h3>
+            <p class="why">Scripts are more reliable than code generated on the fly, and they cost almost nothing, because only their <em>output</em> enters context. If test runs keep writing the same helper script, that's the signal to bundle it.</p>
+            <p class="how"><strong>How</strong>Make scripts <em>handle</em> errors instead of leaving them to Claude, explain every constant (no unexplained magic numbers), write error messages that list the valid options, and say explicitly whether to <em>run</em> a script or <em>read</em> it.</p>
+          </li>
+          <li>
+            <h3>Build a feedback loop into the skill <span class="chip o">Official</span></h3>
+            <p class="why">"Run the validator, fix the errors, repeat" greatly improves output quality. For risky or large jobs, use plan → validate → execute: Claude writes a plan file such as <code>changes.json</code>, a script validates it, and only then are changes applied.</p>
+            <p class="how"><strong>How</strong>Give complex workflows a copyable checklist ("- [ ] Step 3: validate") and a hard rule: "only continue once validation passes."</p>
+          </li>
+          <li>
+            <h3>Explain why, and test rules that enforce discipline <span class="chip o">Official</span><span class="chip p">Practitioner</span></h3>
+            <p class="why"><code>skill-creator</code> treats frequent ALWAYS/NEVER in capitals as a yellow flag: a model that understands the reason generalizes better than one following orders. But for rules Claude is tempted to skip, like TDD or verification, Vincent shows explanation alone isn't enough.</p>
+            <p class="how"><strong>How</strong>By default, give the reason with each rule. For discipline skills, pressure-test them (deadline, sunk cost), record the excuses the agent gives, and add a counter for each one.</p>
+          </li>
+          <li>
+            <h3>Design for security and "no surprises" <span class="chip m">Measured</span></h3>
+            <p class="why">Skills are instructions plus code running with the agent's permissions. The attacks seen in the wild: download-and-run instructions, base64 or Unicode-hidden credential theft, and instructions to disable security settings. Scripts double the risk.</p>
+            <p class="how"><strong>How</strong>No secrets in skills. Never fetch and execute remote code. Keep <code>allowed-tools</code> as narrow as possible. Review every script like production code. The skill should do nothing a reader wouldn't expect from its description.</p>
+          </li>
+        </ol>
+      </section>
+
+      <section id="anatomy">
+        <div class="sec-head">
+          <h2>Anatomy &amp; hard rules</h2>
+          <p>What a registry should check automatically. The limits come from Anthropic's docs; Claude Code's own listing allows longer descriptions.</p>
+        </div>
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr><th>Item</th><th>Rule</th><th>Why</th></tr></thead>
+            <tbody>
+              <tr><td>name</td><td>≤ 64 chars, lowercase letters, digits and hyphens; no "anthropic" or "claude"; no XML</td><td>Rejected otherwise by the API</td></tr>
+              <tr><td>description</td><td>Non-empty, ≤ 1,024 chars (API); Claude Code cuts off listings at 1,536</td><td>The only thing Claude sees before the skill triggers</td></tr>
+              <tr><td>naming style</td><td>Gerund or clear noun phrase: <code>processing-pdfs</code>, not <code>helper</code> or <code>utils</code></td><td>Easy to discover and consistent across the library</td></tr>
+              <tr><td>SKILL.md body</td><td>&lt; 500 lines; details go in reference files</td><td>Loaded whole on trigger; stays in context</td></tr>
+              <tr><td>references</td><td>One level deep from SKILL.md; a table of contents if &gt; 100 lines</td><td>Claude may skim nested files</td></tr>
+              <tr><td>paths</td><td>Forward slashes only</td><td>Backslashes break on Unix</td></tr>
+              <tr><td>MCP tools</td><td>Fully qualified: <code>Server:tool_name</code></td><td>Prevents "tool not found" when there are several servers</td></tr>
+              <tr><td>portability</td><td>API and claude.ai skills: standard fields only (<code>name</code>, <code>description</code>, <code>license</code>, <code>compatibility</code>, <code>metadata</code>, <code>allowed-tools</code>)</td><td>Claude Code extensions such as <code>context</code>, <code>hooks</code> and <code>paths</code> don't carry over</td></tr>
+              <tr><td>side effects</td><td><code>disable-model-invocation: true</code> for deploys and commits</td><td>Only a human can trigger it</td></tr>
+              <tr><td>dependencies</td><td>List packages explicitly; the API sandbox has <strong>no network</strong></td><td>Don't assume anything is installed</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="description">
+        <div class="sec-head">
+          <h2>The description, which decides everything</h2>
+          <p>A skill that never triggers is dead weight, and one that triggers on the wrong requests is noise. Treat the description as the most-tested line in the skill.</p>
+        </div>
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr><th>Pattern</th><th>Example</th><th>Verdict</th></tr></thead>
+            <tbody>
+              <tr><td>Vague</td><td>"Helps with documents"</td><td class="bad">Never triggers correctly</td></tr>
+              <tr><td>First person</td><td>"I can help you process Excel files"</td><td class="bad">Breaks discovery (it's injected into the system prompt)</td></tr>
+              <tr><td>Summarizes the steps</td><td>"Use for TDD: write the test first, watch it fail, write minimal code"</td><td class="bad">Claude follows the summary and skips the body</td></tr>
+              <tr><td>What + when + terms</td><td>"Analyze Excel spreadsheets, create pivot tables, generate charts. Use when working with Excel files, spreadsheets, tabular data, or .xlsx files."</td><td class="good">Good</td></tr>
+              <tr><td>Pushy about when</td><td>"…Use whenever the user mentions dashboards, metrics, or displaying company data, even if they don't say 'dashboard'."</td><td class="good">Counters under-triggering</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="grid2">
+          <div class="card">
+            <h4>Test triggering like a classifier <span class="chip o">Official</span></h4>
+            <ul>
+              <li>20 realistic queries: 8–10 that <em>should</em> trigger and 8–10 that <em>should not</em></li>
+              <li>Negatives should be <strong>near-misses</strong> that share keywords, not obviously unrelated requests</li>
+              <li>Messy, real phrasing: typos, backstory, file names</li>
+              <li>Run each query 3 times; split 60/40 into train and test; pick the best description by its <em>test</em> score</li>
+            </ul>
+            <span class="who">skill-creator's description optimizer</span>
+          </div>
+          <div class="card">
+            <h4>Know when skills don't trigger <span class="chip o">Official</span></h4>
+            <p>Claude consults a skill only for tasks it can't easily do on its own. A simple one-step request ("read this PDF") may not trigger a perfectly described skill. Write trigger tests with realistic, multi-step requests, or they'll tell you nothing.</p>
+            <span class="who">skill-creator: "How skill triggering works"</span>
+          </div>
+        </div>
+      </section>
+
+      <section id="writing">
+        <div class="sec-head">
+          <h2>Writing the body</h2>
+          <p>Write it like an onboarding runbook for a very capable new hire who knows nothing about your company.</p>
+        </div>
+        <div class="grid2">
+          <div class="card">
+            <h4>Style <span class="chip o">Official</span></h4>
+            <ul>
+              <li>Use imperative instructions ("Run…", "Check…")</li>
+              <li>One term per concept, used throughout, never mixing "field", "box" and "element"</li>
+              <li>Concrete input/output examples beat descriptions of style</li>
+              <li>A strict template for fixed formats; a "sensible default" for flexible ones</li>
+              <li>No dates that will go stale; keep an "Old patterns" section instead</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h4>Structure patterns <span class="chip o">Official</span></h4>
+            <ul>
+              <li><strong>Guide + references:</strong> quick start inline, then links to details</li>
+              <li><strong>By domain:</strong> one reference file per area; Claude reads only the one it needs</li>
+              <li><strong>Conditional:</strong> "Creating? → this workflow. Editing? → that one"</li>
+              <li><strong>Checklist:</strong> a copyable progress list for multi-step jobs</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h4>Four types of skill, tested differently <span class="chip p">Practitioner</span></h4>
+            <ul>
+              <li><strong>Discipline</strong> (TDD, verification): pressure-test for shortcuts</li>
+              <li><strong>Technique</strong> (a method): test applying it and the edge cases</li>
+              <li><strong>Pattern</strong> (a mental model): test recognizing when it applies <em>and</em> when it doesn't</li>
+              <li><strong>Reference</strong> (APIs, schemas): test finding the right fact and using it correctly</li>
+            </ul>
+            <span class="who">Jesse Vincent, writing-skills</span>
+          </div>
+          <div class="card">
+            <h4>Scripts that help rather than hinder <span class="chip o">Official</span></h4>
+            <ul>
+              <li>Handle errors in the script instead of crashing and leaving it to Claude</li>
+              <li>Error messages list the valid options ("Field 'x' not found. Available: …")</li>
+              <li>Explain every constant; no magic numbers</li>
+              <li>Say "Run X" vs "See X for the algorithm" explicitly</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section id="testing">
+        <div class="sec-head">
+          <h2>Testing &amp; iteration</h2>
+          <p>The method all the strong sources share: two Claude instances, real tasks, and changes based on observed behavior rather than guesses.</p>
+        </div>
+        <div class="grid2">
+          <div class="card">
+            <h4>The Claude A / Claude B loop <span class="chip o">Official</span></h4>
+            <ul>
+              <li><strong>Claude A</strong> helps you write and refine the skill</li>
+              <li><strong>Claude B</strong>, a fresh instance with the skill loaded, does real tasks</li>
+              <li>Watch B; take specific failures back to A ("B forgot to filter test accounts")</li>
+              <li>Repeat until B handles real work reliably</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h4>RED → GREEN → REFACTOR <span class="chip p">Practitioner</span></h4>
+            <ul>
+              <li><strong>RED:</strong> run scenarios without the skill; record failures and excuses word for word</li>
+              <li><strong>GREEN:</strong> write the smallest skill that fixes those</li>
+              <li><strong>REFACTOR:</strong> find new loopholes, add counters, test again</li>
+              <li>This applies to <em>edits</em> as well: no change without a failing test</li>
+            </ul>
+            <span class="who">Jesse Vincent, Superpowers</span>
+          </div>
+          <div class="card">
+            <h4>Watch how Claude moves through the skill <span class="chip o">Official</span></h4>
+            <ul>
+              <li>Files Claude <strong>never opens</strong> are unnecessary or badly signposted</li>
+              <li>Files it <strong>always opens</strong> probably belong in SKILL.md</li>
+              <li>Reading in an unexpected order means the structure isn't intuitive</li>
+              <li>Read the transcripts, not only the final outputs</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h4>Test on every model you'll use <span class="chip o">Official</span></h4>
+            <p>Haiku may need more guidance; Opus may find the same text over-explained. If a skill will run on several models, test on each, and use blind A/B comparisons when deciding whether version 2 is actually better than version 1.</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="injection">
+        <div class="sec-head">
+          <h2>Sanitization &amp; prompt injection</h2>
+          <p>A skill is text that Claude treats as trusted instructions, running with the user's permissions. That makes every file in the bundle, not just SKILL.md, a place to hide instructions. The research agrees that no single filter is enough, so defend in layers.</p>
+        </div>
+        <div class="stats">
+          <div class="stat"><b class="neg">≤ 80%</b><span>attack success against frontier models from instructions injected into skill files. The authors' verdict: "not solved through model scaling or simple input filtering."</span><small>Skill-Inject, 202 attack pairs</small></div>
+          <div class="stat"><b class="neg">77.6%</b><span>of the time, agents picked a malicious skill over an equivalent honest one, because of how its <strong>description</strong> was worded.</span><small>Semantic supply-chain attacks</small></div>
+          <div class="stat"><b class="neg">36.5–100%</b><span>of malicious skills slipped past AI safety scanners using reworded ("semantic") evasion. One scanner is not a gate.</span><small>Semantic supply-chain attacks</small></div>
+          <div class="stat"><b>&gt; 17%</b><span>of public skills had latent injection flaws, found by a red-team/blue-team agent pair that also proposes patches.</span><small>SkillSecurer</small></div>
+        </div>
+
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr><th>Where it hides</th><th>What it looks like</th><th>Sanitize / detect</th></tr></thead>
+            <tbody>
+              <tr><td>Invisible Unicode</td><td>Zero-width characters, Unicode "tag" characters (U+E0000–E007F) that encode hidden text, and bidi overrides that reorder what a reviewer sees</td><td><strong>Reject</strong> any of these. Normalize to NFKC and flag files the normalization changes</td></tr>
+              <tr><td>Hidden markdown</td><td><code>&lt;!-- comments --&gt;</code>, HTML tags, link titles, alt text, collapsed <code>&lt;details&gt;</code></td><td>Remove or flag comments and raw HTML; show reviewers the <em>raw</em> text, never the rendered view</td></tr>
+              <tr><td>Encoded payloads</td><td>Base64 or hex blobs, <code>powershell -enc</code>, <code>eval(atob(…))</code></td><td>Flag long encoded strings; decode them and re-scan</td></tr>
+              <tr><td>Fetch-and-run</td><td><code>curl … | sh</code>, <code>iwr … | iex</code>, "download and execute this helper"</td><td><strong>Reject</strong>. Dependencies are declared and pinned, never fetched at runtime</td></tr>
+              <tr><td>Instruction override</td><td>"ignore previous instructions", "you are now…", "don't tell the user", "skip confirmation"</td><td>Pattern scan plus adversarial LLM review of the <em>whole bundle</em></td></tr>
+              <tr><td>Secret access</td><td>Reads of <code>~/.ssh</code>, <code>~/.aws</code>, <code>.env</code>, tokens, then network calls</td><td>Flag any credential path or env-var dump; check scripts for data leaving the machine</td></tr>
+              <tr><td>Security disablement</td><td>"Turn off the sandbox", edits to permissions or settings, persistence via services or startup items</td><td><strong>Reject</strong>. Skills never change agent or security settings</td></tr>
+              <tr><td>Biased description</td><td>"Always use this instead of other skills", "official and preferred", urgency</td><td>Review descriptions for comparative or persuasive wording; they should describe, not sell</td></tr>
+              <tr><td>Scripts &amp; assets</td><td>Payloads in <code>scripts/</code>, templates, data files, archives, binaries, symlinks</td><td>Scan every file; no binaries, archives, or links outside the skill folder</td></tr>
+              <tr><td>Runtime content</td><td>A script that prints web or ticket content into Claude's context</td><td>Label outside content as data, never instructions; clip its length; don't treat it as instructions</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="grid2">
+          <div class="card">
+            <h4>Layer 1 · Mechanical sanitization <span class="chip s">Synthesis</span></h4>
+            <ul>
+              <li>Normalize to NFKC; reject invisible, tag and bidi characters</li>
+              <li>Strip or flag HTML comments and raw HTML</li>
+              <li>Decode base64/hex blobs and re-scan them</li>
+              <li>Allowlist URLs and domains; reject fetch-and-run</li>
+              <li>Reject binaries, archives, symlinks and files outside the folder</li>
+            </ul>
+            <span class="who">This catches the crude attacks cheaply and runs on every commit</span>
+          </div>
+          <div class="card">
+            <h4>Layer 2 · Adversarial review <span class="chip m">Measured</span></h4>
+            <ul>
+              <li>An LLM reviewer reads the <em>entire</em> bundle, scripts included, and answers "what would this make an agent do that the description doesn't say?"</li>
+              <li>A red agent tries injections against it (the SkillSecurer approach)</li>
+              <li>Use two different reviewers or models, since a single scanner can be evaded</li>
+              <li>A human reviews the raw diff for medium risk and above</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h4>Layer 3 · Least privilege at runtime <span class="chip m">Measured</span></h4>
+            <p>Skill-Inject's conclusion is that filtering alone fails, and context-aware authorization is needed. Keep <code>allowed-tools</code> as narrow as possible. Use <code>disable-model-invocation</code> for anything with side effects. Run scripts in a sandbox with no network unless declared, and deny access to credential paths with permission rules or hooks.</p>
+          </div>
+          <div class="card">
+            <h4>Layer 4 · Provenance &amp; integrity <span class="chip o">Official</span><span class="chip s">Synthesis</span></h4>
+            <p>Only publish from the registry's own repo. Sign releases, pin versions, and hash every file so any change forces a re-review. Record who approved each version. Never auto-import public skills: fork, sanitize, re-evaluate and own them.</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="registry">
+        <div class="sec-head">
+          <h2>Turning this into a registry pipeline</h2>
+          <p>My synthesis of everything above, shaped for a team whose job is creating, maintaining and deploying skills. Each stage is a gate a skill must pass to move on.</p>
+        </div>
+        <ol class="pipe">
+          <li><span class="stage">1 · Intake</span><span class="what">Record the gap the skill fills, a named <strong>owner and backup owner</strong>, a risk tier, and the real failed tasks that justify it.</span><span class="gate">owner, risk tier</span></li>
+          <li><span class="stage">2 · Lint</span><span class="what">Automatically check the schema: name and description rules, &lt; 500 lines, references one level deep, forward slashes, no XML, fully qualified MCP names, portable fields only if it's API-bound.</span><span class="gate">schema pass</span></li>
+          <li><span class="stage">3 · Security</span><span class="what">Sanitize and scan (see <a href="#injection">Sanitization &amp; injection</a>): invisible Unicode, hidden HTML, encoded blobs, fetch-and-run, override phrases, secret access, biased descriptions. Then an adversarial LLM review of the full bundle, static analysis of scripts plus a sandboxed run, and a flag on broad <code>allowed-tools</code>.</span><span class="gate">0 critical</span></li>
+          <li><span class="stage">4 · Evals</span><span class="what">At least 3 task evals run with and without the skill, with deterministic checks where possible. <strong>The difference from the baseline must be positive.</strong></span><span class="gate">Δ &gt; 0</span></li>
+          <li><span class="stage">5 · Triggering</span><span class="what">A 20-query set that includes near-misses; track precision and recall; check it doesn't collide with other skills in the registry.</span><span class="gate">P/R threshold</span></li>
+          <li><span class="stage">6 · Review</span><span class="what">A domain expert approves the content, and a different person merges (separation of duties) for medium risk and above.</span><span class="gate">2 humans</span></li>
+          <li><span class="stage">7 · Release</span><span class="what">Semantic version plus changelog, signed and published through the marketplace or managed channel. Production is <strong>pinned</strong> to a version, with the previous one kept for rollback.</span><span class="gate">semver, pinned</span></li>
+          <li><span class="stage">8 · Operate</span><span class="what">Monitor trigger rates and failures; review on a schedule; re-run evals when models change; deprecate stale skills.</span><span class="gate">review date</span></li>
+        </ol>
+        <div class="grid2">
+          <div class="card">
+            <h4>Why the evals gate matters most <span class="chip s">Synthesis</span></h4>
+            <p>SkillsBench found about 1 in 5 tasks got worse with a curated skill. A registry that deploys skills without proving they beat the baseline will ship some that make Claude worse. That's the single most important gate.</p>
+          </div>
+          <div class="card">
+            <h4>Why the security gate matters <span class="chip s">Synthesis</span></h4>
+            <p>Public registries show npm-style supply-chain problems: 13–26% of skills have flaws, with coordinated malware campaigns in 2026. An internal registry pushes skills to many engineers at once, so one bad skill spreads widely. Treat skills as code with execution rights.</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="donts">
+        <div class="sec-head">
+          <h2>Anti-patterns</h2>
+        </div>
+        <div class="donts">
+          <div class="dont"><h4>Letting Claude invent the content</h4><p>Self-generated skills did worse than no skill. Claude structures; experts supply the knowledge.</p></div>
+          <div class="dont"><h4>A description that summarizes the workflow</h4><p>Claude takes the shortcut and ignores the body. Describe <em>when</em>, not <em>how</em>.</p></div>
+          <div class="dont"><h4>Explaining what Claude already knows</h4><p>A paragraph about what a PDF is costs tokens on every use and teaches nothing.</p></div>
+          <div class="dont"><h4>Offering a menu</h4><p>"Use pypdf, or pdfplumber, or PyMuPDF…" Give one default and one escape hatch.</p></div>
+          <div class="dont"><h4>Deeply nested references</h4><p>File A → B → C means Claude may only skim C. Keep references one level deep.</p></div>
+          <div class="dont"><h4>Wall-to-wall MUSTs</h4><p>Rigid capitals without reasons generalize poorly. Explain why, and save hard rules for discipline skills you've pressure-tested.</p></div>
+          <div class="dont"><h4>Overfitting to your test prompts</h4><p>A skill that works on only three examples is useless. Generalize from feedback instead of patching single cases.</p></div>
+          <div class="dont"><h4>Shipping untested edits</h4><p>"It's just a small doc change" still changes behavior. Re-run the evals.</p></div>
+        </div>
+      </section>
+
+      <section id="kit">
+        <div class="sec-head">
+          <h2>Templates</h2>
+          <p>Starting points that follow the rules above.</p>
+        </div>
+
+        <div class="snip">
+          <div class="snip-head"><h4>SKILL.md skeleton</h4><button class="copy" type="button" data-for="t1">Copy</button></div>
+<pre id="t1">---
+name: analyzing-sales-pipeline
+description: Analyzes the company sales pipeline in BigQuery, including stage conversion, deal velocity, and forecast coverage. Use when the user asks about pipeline, opportunities, win rates, sales forecasts, or quota coverage, even if they don't mention BigQuery.
+---
+
+# Sales pipeline analysis
+
+## Quick start
+[The 80% case in a few lines, with one concrete example.]
+
+## Rules that matter (and why)
+- Exclude test accounts (`is_test = true`); they inflate win rates.
+- Use `closed_at`, not `updated_at`, for period filters; updates happen after close.
+
+## Workflow
+Copy this checklist and track progress:
+- [ ] 1. Identify the metric and period
+- [ ] 2. Write the query using reference/schema.md
+- [ ] 3. Validate: `python scripts/validate_query.py query.sql`
+- [ ] 4. Only continue when validation passes
+
+## Reference (read only what the task needs)
+- Tables and columns: [reference/schema.md](reference/schema.md)
+- Metric definitions: [reference/metrics.md](reference/metrics.md)</pre>
+        </div>
+
+        <div class="snip">
+          <div class="snip-head"><h4>Task evals (evals/evals.json)</h4><button class="copy" type="button" data-for="t2">Copy</button></div>
+<pre id="t2">{
+  "skill_name": "analyzing-sales-pipeline",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "what was our Q3 win rate for enterprise deals? leadership wants it by region",
+      "expected_output": "Win rate by region for Q3, enterprise segment only",
+      "assertions": [
+        "Excludes test accounts",
+        "Filters on closed_at within Q3",
+        "Groups by region"
+      ]
+    }
+  ]
+}</pre>
+        </div>
+
+        <div class="snip">
+          <div class="snip-head"><h4>Trigger evals (near-miss negatives)</h4><button class="copy" type="button" data-for="t3">Copy</button></div>
+<pre id="t3">[
+  {"query": "ok so leadership wants pipeline coverage vs quota for next qtr, can you pull that", "should_trigger": true},
+  {"query": "which reps have deals stuck in negotiation > 30 days?", "should_trigger": true},
+  {"query": "write a python function that computes a generic conversion funnel from a csv", "should_trigger": false},
+  {"query": "our marketing pipeline (the ETL job) failed last night, check the logs", "should_trigger": false}
+]</pre>
+        </div>
+
+        <div class="snip">
+          <div class="snip-head"><h4>Layer-1 sanitization scanner (Python, no dependencies)</h4><button class="copy" type="button" data-for="t5">Copy</button></div>
+          <span class="who">Run it in CI on every skill change: <code>python scan_skill.py path/to/skill --allow-domain yourcompany.com</code>. Exit 0 = pass, 2 = needs human/LLM review, 1 = block. Tested Sep 23, 2026: a test skill with 7 planted attacks was blocked (14 critical); 25 clean Anthropic skills gave 18 passes, 7 reviews, 0 blocks. It catches crude tricks cheaply and is not a complete defense (see Layers 2–4).</span>
+<pre id="t5">&quot;&quot;&quot;Layer-1 sanitization scan for a skill folder.
+
+Exit codes: 0 = pass, 2 = HIGH findings need human/LLM review, 1 = CRITICAL, block.
+
+Usage: python scan_skill.py path/to/skill [--allow-domain example.com ...]
+Catches crude injection and payload tricks cheaply. It is NOT a complete
+defense: pair it with adversarial LLM review, human review, and least privilege.
+&quot;&quot;&quot;
+import argparse, base64, binascii, pathlib, re, sys, unicodedata
+
+# Zero-width, bidi-override, word-joiner, BOM and soft-hyphen characters, plus
+# Unicode &quot;tag&quot; characters (U+E0000-E007F), which can smuggle invisible text.
+INVISIBLE = re.compile(
+    &quot;[\\u200b-\\u200f\\u202a-\\u202e\\u2060-\\u2064\\u2066-\\u2069\\ufeff\\u00ad]&quot;
+    &quot;|[\\U000e0000-\\U000e007f]&quot;
+)
+HTML_COMMENT = re.compile(r&quot;&lt;!--.*?--&gt;&quot;, re.S)
+B64_BLOB = re.compile(r&quot;[A-Za-z0-9+/]{60,}={0,2}&quot;)
+URL = re.compile(r&quot;https?://([A-Za-z0-9.-]+)&quot;, re.I)
+# Phrase rules can&#x27;t tell *mentioning* an attack from *doing* one, so in visible
+# text they are HIGH (review). The same phrase in hidden content is CRITICAL.
+PHRASES = {&quot;instruction override&quot;, &quot;concealment from user&quot;}
+# Docs often *mention* .env or eval(); scripts actually *doing* it is the risk.
+CODE_RISKS = {&quot;credential access&quot;, &quot;dynamic execution&quot;}
+RULES = [  # (severity, label, pattern)
+    (&quot;CRITICAL&quot;, &quot;instruction override&quot;,
+     r&quot;ignore (all |any )?(previous|prior|above) (instructions|rules)&quot;
+     r&quot;|disregard (the |your )?(system|previous)|you are now\b|new system prompt&quot;),
+    (&quot;CRITICAL&quot;, &quot;concealment from user&quot;,
+     r&quot;(do not|don&#x27;t|never) (tell|inform|show|mention)[^.\n]{0,40}\buser\b&quot;
+     r&quot;|without (asking|telling|informing|notifying) (the )?user&quot;
+     r&quot;|without (the )?user&#x27;?s? (knowledge|consent|confirmation)&quot;),
+    (&quot;CRITICAL&quot;, &quot;fetch-and-execute&quot;,
+     r&quot;(curl|wget)[^\n|]*\|\s*(ba|z)?sh\b&quot;
+     r&quot;|(iwr|invoke-webrequest|irm)[^\n|]*\|\s*iex&quot;
+     r&quot;|powershell[^\n]*-e(nc(odedcommand)?)?\s+[A-Za-z0-9+/=]{20,}&quot;),
+    (&quot;CRITICAL&quot;, &quot;security disablement&quot;,
+     r&quot;(disable|turn off|bypass)[^.\n]{0,30}(sandbox|permission|security|antivirus|defender|firewall)&quot;
+     r&quot;|dangerously-?skip-?permissions&quot;),
+    (&quot;HIGH&quot;, &quot;credential access&quot;,
+     r&quot;~?[/\\]\.(ssh|aws|kube|docker)\b|id_rsa|\.env\b|credentials\.json&quot;
+     r&quot;|(aws_secret|api[_-]?key|token)\s*[:=]&quot;),
+    (&quot;HIGH&quot;, &quot;dynamic execution&quot;,
+     r&quot;\beval\s*\(|\bexec\s*\(|atob\s*\(|base64\s+(-d|--decode)|FromBase64String&quot;),
+]
+# Checked against the frontmatter description only: the manipulation target.
+PERSUASIVE = re.compile(
+    r&quot;always (use|prefer|choose) this|instead of (any )?other skills&quot;
+    r&quot;|(most )?(official|trusted|preferred) skill&quot;, re.I)
+DESCRIPTION = re.compile(r&quot;^description:\s*(.+)$&quot;, re.M)
+BINARY_EXT = {&quot;.exe&quot;, &quot;.dll&quot;, &quot;.so&quot;, &quot;.dylib&quot;, &quot;.bin&quot;, &quot;.zip&quot;, &quot;.7z&quot;, &quot;.rar&quot;,
+              &quot;.tar&quot;, &quot;.gz&quot;, &quot;.jar&quot;, &quot;.pyc&quot;}
+
+
+def frontmatter(text: str) -&gt; str:
+    &quot;&quot;&quot;Return the YAML frontmatter block of a SKILL.md, or &#x27;&#x27; if absent.&quot;&quot;&quot;
+    if not text.startswith(&quot;---&quot;):
+        return &quot;&quot;
+    end = text.find(&quot;\n---&quot;, 3)
+    return text[3:end] if end != -1 else &quot;&quot;
+
+
+def scan(root: pathlib.Path, allowed: set[str]) -&gt; list[tuple[str, str, str]]:
+    out = []
+
+    def add(sev, where, msg):
+        if (sev, where, msg) not in out:  # report each distinct finding once
+            out.append((sev, where, msg))
+
+    for f in sorted(root.rglob(&quot;*&quot;)):
+        rel = f.relative_to(root).as_posix()
+        if f.is_symlink():
+            add(&quot;CRITICAL&quot;, rel, &quot;symlink (may point outside the skill)&quot;)
+            continue
+        if not f.is_file():
+            continue
+        if f.suffix.lower() in BINARY_EXT:
+            add(&quot;CRITICAL&quot;, rel, &quot;binary or archive file&quot;)
+            continue
+        try:
+            text = f.read_text(encoding=&quot;utf-8&quot;)
+        except UnicodeDecodeError:
+            add(&quot;HIGH&quot;, rel, &quot;not valid UTF-8 text&quot;)
+            continue
+
+        for m in INVISIBLE.finditer(text):
+            line = text.count(&quot;\n&quot;, 0, m.start()) + 1
+            add(&quot;CRITICAL&quot;, f&quot;{rel}:{line}&quot;, f&quot;invisible/bidi/tag char U+{ord(m.group()):04X}&quot;)
+        if unicodedata.normalize(&quot;NFKC&quot;, text) != text:
+            add(&quot;MEDIUM&quot;, rel, &quot;text changes under NFKC normalization (look-alike characters?)&quot;)
+
+        if rel == &quot;SKILL.md&quot;:
+            d = DESCRIPTION.search(frontmatter(text))
+            p = PERSUASIVE.search(d.group(1)) if d else None
+            if p:
+                add(&quot;MEDIUM&quot;, rel, f&quot;persuasive description: {p.group()!r}&quot;)
+
+        if f.suffix.lower() == &quot;.md&quot;:  # comments are invisible once markdown renders
+            for m in HTML_COMMENT.finditer(text):
+                line = text.count(&quot;\n&quot;, 0, m.start()) + 1
+                add(&quot;MEDIUM&quot;, f&quot;{rel}:{line}&quot;, &quot;HTML comment (hidden from rendered view)&quot;)
+
+        is_md = f.suffix.lower() == &quot;.md&quot;
+        hidden = [m.group() for m in HTML_COMMENT.finditer(text)] if is_md else []
+        for m in B64_BLOB.finditer(text):
+            try:
+                decoded = base64.b64decode(m.group(), validate=True).decode(&quot;utf-8&quot;)
+            except (binascii.Error, UnicodeDecodeError, ValueError):
+                continue
+            hidden.append(decoded)  # re-scan decoded payloads
+            add(&quot;HIGH&quot;, rel, &quot;base64 blob that decodes to text&quot;)
+
+        visible = HTML_COMMENT.sub(&quot; &quot;, text) if is_md else text
+        for sev, label, pat in RULES:
+            vis_sev = (&quot;HIGH&quot; if label in PHRASES
+                       else &quot;MEDIUM&quot; if label in CODE_RISKS and is_md else sev)
+            for m in re.finditer(pat, visible, re.I):
+                add(vis_sev, rel, f&quot;{label}: {m.group()[:70]!r}&quot;)
+            for chunk in hidden:  # a match inside hidden content is deliberate
+                for m in re.finditer(pat, chunk, re.I):
+                    add(&quot;CRITICAL&quot;, rel, f&quot;{label} (hidden): {m.group()[:70]!r}&quot;)
+
+        for m in URL.finditer(text):
+            host = m.group(1).lower()
+            if not any(host == d or host.endswith(&quot;.&quot; + d) for d in allowed):
+                add(&quot;MEDIUM&quot;, rel, f&quot;URL to non-allowlisted domain: {host}&quot;)
+    return out
+
+
+if __name__ == &quot;__main__&quot;:
+    ap = argparse.ArgumentParser()
+    ap.add_argument(&quot;skill_dir&quot;)
+    ap.add_argument(&quot;--allow-domain&quot;, action=&quot;append&quot;, default=[])
+    args = ap.parse_args()
+    root = pathlib.Path(args.skill_dir)
+    if not (root / &quot;SKILL.md&quot;).is_file():
+        sys.exit(f&quot;{root}: no SKILL.md&quot;)
+    findings = scan(root, set(args.allow_domain))
+    for sev, where, msg in findings:
+        print(f&quot;{sev:8} {where}: {msg}&quot;)
+    crit = sum(1 for s, _, _ in findings if s == &quot;CRITICAL&quot;)
+    high = sum(1 for s, _, _ in findings if s == &quot;HIGH&quot;)
+    print(f&quot;\n{len(findings)} finding(s): {crit} critical, {high} high&quot;)
+    sys.exit(1 if crit else 2 if high else 0)
+</pre>
+        </div>
+
+        <div class="snip">
+          <div class="snip-head"><h4>Pre-publish checklist</h4><button class="copy" type="button" data-for="t4">Copy</button></div>
+<pre id="t4">[ ] Baseline run WITHOUT the skill recorded; failures written down
+[ ] &gt;= 3 task evals; with-skill beats baseline
+[ ] Trigger set of ~20 incl. near-misses; precision/recall acceptable
+[ ] Description: third person, what + when, real terms, no workflow summary
+[ ] SKILL.md &lt; 500 lines; references one level deep; ToC on long files
+[ ] Freedom matches fragility; one default + escape hatch
+[ ] Scripts handle errors, explain constants, run in a sandbox
+[ ] No secrets, no remote fetch-and-exec, minimal allowed-tools
+[ ] Sanitization scan clean: no invisible/bidi/tag chars, no hidden HTML,
+    no decodable payloads, no override/concealment phrases in hidden content
+[ ] Adversarial LLM review of the FULL bundle (scripts + references + assets)
+[ ] Tested on every model it will run on
+[ ] Owner, backup owner, semver, changelog, review date recorded</pre>
+        </div>
+      </section>
+
+      <section id="sources">
+        <div class="sec-head"><h2>Sources</h2></div>
+        <div class="src-group">Official</div>
+        <ul class="src">
+          <li><a href="https://platform.claude.com/docs/en/agents-and-tools/agent-skills/best-practices">Anthropic: Skill authoring best practices</a></li>
+          <li><a href="https://www.anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills">Anthropic Engineering: Equipping agents with Agent Skills</a></li>
+          <li><a href="https://code.claude.com/docs/en/skills">Claude Code: Skills</a></li>
+          <li><a href="https://platform.claude.com/docs/en/agents-and-tools/agent-skills/enterprise">Anthropic: Skills for enterprise</a></li>
+          <li><a href="https://agentskills.io">Agent Skills open standard</a></li>
+          <li>skill-creator plugin (anthropics/claude-plugins-official), read locally</li>
+        </ul>
+        <div class="src-group">Research</div>
+        <ul class="src">
+          <li><a href="https://arxiv.org/abs/2602.12670">SkillsBench: how well agent skills work</a></li>
+          <li><a href="https://arxiv.org/abs/2606.11543">SkillJuror: how skill organization changes behavior</a></li>
+          <li><a href="https://arxiv.org/abs/2601.10338">Agent Skills in the Wild: vulnerabilities at scale</a></li>
+          <li><a href="https://snyk.io/blog/toxicskills-malicious-ai-agent-skills-clawhub/">Snyk: ToxicSkills audit</a></li>
+          <li><a href="https://arxiv.org/pdf/2605.11418">Semantic supply-chain attacks on skill registries</a></li>
+          <li><a href="https://arxiv.org/pdf/2602.20156">Skill-Inject: skill-file attacks</a></li>
+        </ul>
+        <div class="src-group">Practitioners &amp; governance</div>
+        <ul class="src">
+          <li><a href="https://github.com/obra/superpowers/">Jesse Vincent: Superpowers (writing-skills)</a></li>
+          <li><a href="https://blog.fsck.com/2025/10/09/superpowers/">Jesse Vincent: How I'm using coding agents</a></li>
+          <li><a href="https://simonwillison.net/2025/Oct/16/claude-skills/">Simon Willison: Claude Skills are awesome</a></li>
+          <li><a href="https://team400.ai/blog/2026-04-claude-agent-skills-enterprise-governance-guide">Team 400: Enterprise skills governance guide</a></li>
+          <li><a href="https://atlan.com/know/what-are-enterprise-skills/">Atlan: Enterprise skills governance</a></li>
+        </ul>
+      </section>
+    </main>
+  </div>
+  <footer>Compiled September 23, 2026. Figures are as reported by each source; the registry pipeline is a synthesis, not a published standard.</footer>
+</div>
+
+<script>
+document.querySelectorAll('.copy').forEach(function(btn){
+  btn.addEventListener('click', function(){
+    var el = document.getElementById(btn.dataset.for);
+    function done(ok){ btn.textContent = ok ? 'Copied' : 'Select & copy'; setTimeout(function(){ btn.textContent = 'Copy'; }, 1600); }
+    function fallback(){ try { var r=document.createRange(); r.selectNodeContents(el); var s=window.getSelection(); s.removeAllRanges(); s.addRange(r);} catch(e){} done(false); }
+    try { navigator.clipboard.writeText(el.innerText).then(function(){ done(true); }, fallback); } catch(e){ fallback(); }
+  });
+});
+</script>
